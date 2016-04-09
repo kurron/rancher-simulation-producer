@@ -16,9 +16,8 @@
 
 package org.kurron.example.core
 
-import org.kurron.example.outbound.TimeService
+import org.kurron.example.outbound.MessagingService
 import org.kurron.feedback.AbstractFeedbackAware
-import org.kurron.traits.GenerationAbility
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -28,20 +27,20 @@ import org.springframework.stereotype.Component
  * no touching the network, filesystem or anything else that exists outside the process.
  **/
 @Component
-class DefaultEchoComponent extends AbstractFeedbackAware implements EchoComponent, GenerationAbility {
+class DefaultEchoComponent extends AbstractFeedbackAware implements EchoComponent {
 
     /**
      * Outbound gateway.
      */
-    private final TimeService gateway
+    private final MessagingService gateway
 
     @Autowired
-    DefaultEchoComponent( TimeService aGateway ) {
+    DefaultEchoComponent( MessagingService aGateway ) {
         gateway = aGateway
     }
 
     @Override
     void processMessage( final String message ) {
-
+        gateway.send( message )
     }
 }
