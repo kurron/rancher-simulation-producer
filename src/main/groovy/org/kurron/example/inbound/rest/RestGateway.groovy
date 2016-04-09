@@ -1,25 +1,48 @@
+/*
+ * Copyright (c) 2016. Ronald D. Kurr kurr@jvmguy.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kurron.example.inbound.rest
 
+import java.time.Instant
+import javax.servlet.http.HttpServletRequest
+import javax.validation.Valid
 import org.kurron.example.MessagingContext
 import org.kurron.example.core.TimeComponent
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.InboundRestGateway
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.hateoas.Link
+import org.springframework.hateoas.ExposesResourceFor
+import org.springframework.hateoas.mvc.ControllerLinkBuilder
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.Errors
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.HandlerMapping
 
-import javax.servlet.http.HttpServletRequest
-import java.time.Instant
-
 /**
- * Inbound HTTP gateway that supports the FIXME resource.
+ * Inbound HTTP gateway that supports the echo resource.
  **/
 @InboundRestGateway
-@RequestMapping
+@RequestMapping( path = '/echo',
+                 consumes = [HypermediaControl.MIME_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE],
+                 produces = [HypermediaControl.MIME_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE] )
+@ExposesResourceFor( HypermediaControl )
 class RestGateway extends AbstractFeedbackAware {
 
     /**
@@ -32,27 +55,36 @@ class RestGateway extends AbstractFeedbackAware {
         theComponent = aComponent
     }
 
-    @RequestMapping( path = '/descriptor/application', method = [RequestMethod.GET], produces = [HypermediaControl.MIME_TYPE] )
-    ResponseEntity<HypermediaControl> fetchApplicationList( HttpServletRequest request ) {
+    @RequestMapping( method = [RequestMethod.PUT] )
+    ResponseEntity<HypermediaControl> echoMessage( @RequestBody @Valid HypermediaControl upload,
+                                                   HttpServletRequest request,
+                                                   Errors errors ) {
+        final ResponseEntity<HypermediaControl> response
         def control = defaultControl( request )
-        control.add( new Link( 'foo', 'bar' ) )
-        control.time = theComponent.currentTime().toString()
-        ResponseEntity.ok( control )
+        control.add( ControllerLinkBuilder.linkTo( RestGateway ).withSelfRel() )
+
+        if ( errors.hasErrors() ) {
+            addErrors( errors, control )
+            response = ResponseEntity.badRequest().body( control )
+        }
+        else {
+            control.message = upload.message
+            response = ResponseEntity.ok( control )
+        }
+        response
     }
 
-    @RequestMapping( path = '/descriptor/fail', method = [RequestMethod.GET], produces = [HypermediaControl.MIME_TYPE] )
-    ResponseEntity<HypermediaControl> failApplicationList() {
-        throw new RuntimeException( 'Failure -- system exception' )
-    }
-
-    @RequestMapping( path = '/descriptor/fail/application', method = [RequestMethod.GET], produces = [HypermediaControl.MIME_TYPE] )
-    ResponseEntity<HypermediaControl> failSystemApplicationList() {
-        throw new ForcedApplicationError( MessagingContext.FORCED_ERROR )
-    }
-
-    protected static HypermediaControl defaultControl( HttpServletRequest request ) {
+    private static HypermediaControl defaultControl( HttpServletRequest request ) {
         def path = request.getAttribute( HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE ) as String
         new HypermediaControl( status: HttpStatus.OK.value(), timestamp: Instant.now().toString(), path: path )
     }
 
+    private static HypermediaControl addErrors( Errors errors, HypermediaControl toAugment ) {
+        def validationErrors = errors.fieldErrors.collect { new ValidationError( field: it.field, reason: it.defaultMessage ) }
+        toAugment.errorBlock = new ErrorBlock( code: MessagingContext.VALIDATION_ERROR.code,
+                                               message: 'The uploaded descriptor is invalid.  Please correct the issues and try again.',
+                                               developerMessage: 'Certain properties in the payload are invalid.',
+                                               validationErrors: validationErrors )
+        toAugment
+    }
 }
