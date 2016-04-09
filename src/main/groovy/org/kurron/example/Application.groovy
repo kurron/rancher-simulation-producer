@@ -17,15 +17,20 @@
 package org.kurron.example
 
 import groovy.util.logging.Slf4j
+import org.kurron.feedback.FeedbackAwareBeanPostProcessor
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
+import org.springframework.cloud.stream.annotation.EnableBinding
+import org.springframework.cloud.stream.messaging.Source
+import org.springframework.context.annotation.Bean
 
 /**
  * The entry point into the system.  Runs as a standalone web server.
  */
 @Slf4j
 @SpringBootApplication
+@EnableBinding( Source )
 @EnableConfigurationProperties( ApplicationProperties )
 class Application {
 
@@ -33,4 +38,8 @@ class Application {
         SpringApplication.run( Application, args )
     }
 
+    @Bean
+    static FeedbackAwareBeanPostProcessor feedbackAwareBeanPostProcessor(  ApplicationProperties configuration  ) {
+        new FeedbackAwareBeanPostProcessor( configuration.serviceCode, configuration.serviceInstance, configuration.realm )
+    }
 }

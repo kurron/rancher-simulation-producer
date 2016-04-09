@@ -68,7 +68,7 @@ class RestGateway extends AbstractFeedbackAware {
             response = ResponseEntity.badRequest().body( control )
         }
         else {
-            control.message = upload.message
+            control.message = theComponent.processMessage( upload.message )
             response = ResponseEntity.ok( control )
         }
         response

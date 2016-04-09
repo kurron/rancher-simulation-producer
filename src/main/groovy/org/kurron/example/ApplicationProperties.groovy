@@ -30,32 +30,17 @@ class ApplicationProperties {
     String foo
 
     /**
-     * This property controls the name of the queue that the inbound gateway binds to.
+     * Identifies this type of service. Used in logging.
      */
-    String queueName
+    String serviceCode
 
     /**
-     * This property controls the name of the exchange that the inbound gateway binds to.
+     * Identifies this instance of the service. Used in logging.
      */
-    String exchangeName
+    String serviceInstance
 
     /**
-     * This property controls the name of the exchange used to publish poison messages to.
+     * Logically groups a collection of services. Used in logging.
      */
-    String deadLetterExchangeName
-
-    /**
-     * This property controls the name of the queue used to hold poison messages.
-     */
-    String deadLetterQueueName
-
-    /**
-     * This property controls how many times a message will be processed before being declared a poison message.
-     */
-    int messageRetryAttempts
-
-    /**
-     * What to name the message stream channel.
-     */
-    String inputChannelName
+    String realm
 }

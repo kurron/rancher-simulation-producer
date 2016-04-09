@@ -23,7 +23,7 @@ interface MessagingService {
 
     /**
      * Sends the incoming message to the downstream message broker.
-     * @param message text provided by the caller.
+     * @param message text provided by the client.
      * @return message to hand over to the broker.
      */
     String send( String message )

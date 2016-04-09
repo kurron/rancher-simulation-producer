@@ -16,23 +16,30 @@
 
 package org.kurron.example.outbound
 
-import groovy.util.logging.Slf4j
+import org.kurron.example.MessagingContext
+import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.OutboundGateway
-import org.springframework.cloud.stream.annotation.EnableBinding
-import org.springframework.cloud.stream.messaging.Source
-import org.springframework.integration.annotation.InboundChannelAdapter
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.integration.support.MessageBuilder
+import org.springframework.messaging.MessageChannel
 
 /**
  * Gateway that know how to send messages to the message broker.
  */
-@Slf4j
+@SuppressWarnings( 'GroovyUnusedDeclaration' )
 @OutboundGateway
-@EnableBinding( Source )
-class MessagingGateway implements MessagingService {
+class MessagingGateway extends AbstractFeedbackAware implements MessagingService {
 
-    @InboundChannelAdapter( Source.OUTPUT )
+    private MessageChannel theOutput
+
+    @Autowired
+    MessagingGateway( final MessageChannel output ) {
+        theOutput = output
+    }
+
     String send( String message ) {
-        log.info( 'Sending {}', message )
+        feedbackProvider.sendFeedback( MessagingContext.MESSAGING_UPDATE, message )
+        theOutput.send( MessageBuilder.withPayload( message ).build() )
         message
     }
 }
