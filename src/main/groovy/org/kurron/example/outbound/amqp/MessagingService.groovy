@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kurron.example.outbound
+package org.kurron.example.outbound.amqp
 
 /**
  * An example outbound gateway service interface.

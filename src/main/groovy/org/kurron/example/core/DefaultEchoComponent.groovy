@@ -16,7 +16,7 @@
 
 package org.kurron.example.core
 
-import org.kurron.example.outbound.MessagingService
+import org.kurron.example.outbound.amqp.MessagingService
 import org.kurron.feedback.AbstractFeedbackAware
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
