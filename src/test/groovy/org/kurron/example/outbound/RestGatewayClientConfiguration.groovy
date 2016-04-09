@@ -1,13 +1,23 @@
+/*
+ * Copyright (c) 2016. Ronald D. Kurr kurr@jvmguy.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kurron.example.outbound
 
-import feign.Logger
-import feign.Request
-import feign.RequestInterceptor
-import feign.RequestTemplate
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-
-import java.time.Instant
 
 /**
  * Custom Feign configuration for the RestGatewayClient.
@@ -26,29 +36,5 @@ class RestGatewayClientConfiguration {
     @Bean
     RestGatewayClientFallback restGatewayClientFallback() {
         new RestGatewayClientFallback()
-    }
-
-    @Bean
-    Logger.Level feignLoggerLevel() {
-        Logger.Level.FULL
-    }
-
-    @Bean
-    CustomErrorDecoder customErrorDecoder() {
-        new CustomErrorDecoder()
-    }
-
-    @Bean
-    Request.Options requestOptions() {
-        int connectionTimeout = 1000
-        int readTimeout = 1000
-        new Request.Options( connectionTimeout, readTimeout  )
-    }
-
-    @Bean
-    RequestInterceptor customRequestInterceptor() {
-        { RequestTemplate template ->
-            template.header( 'X-Custom-Header', Instant.now().toString() )
-        } as RequestInterceptor
     }
 }

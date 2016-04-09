@@ -4,7 +4,11 @@
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.kurron.example.Application" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <module name="producer_main" />
-    <envs />
+    <envs>
+      <env name="SPRING_CLOUD_CONSUL_DISCOVERY_ENABLED" value="false" />
+      <env name="SPRING_CLOUD_CONSUL_DISCOVERY_REGISTER" value="false" />
+      <env name="SPRING_RABBITMQ_HOST" value="192.168.1.229" />
+    </envs>
     <method>
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="processResources" externalProjectPath="$PROJECT_DIR$/build.gradle" vmOptions="" scriptParameters="" />
     </method>
