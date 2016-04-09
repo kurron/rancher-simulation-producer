@@ -16,7 +16,6 @@
 
 package org.kurron.example.core
 
-import java.time.Instant
 import org.kurron.example.outbound.TimeService
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.traits.GenerationAbility
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Component
  * no touching the network, filesystem or anything else that exists outside the process.
  **/
 @Component
-class DefaultTimeComponent extends AbstractFeedbackAware implements TimeComponent, GenerationAbility {
+class DefaultEchoComponent extends AbstractFeedbackAware implements EchoComponent, GenerationAbility {
 
     /**
      * Outbound gateway.
@@ -37,12 +36,12 @@ class DefaultTimeComponent extends AbstractFeedbackAware implements TimeComponen
     private final TimeService gateway
 
     @Autowired
-    DefaultTimeComponent( TimeService aGateway ) {
+    DefaultEchoComponent( TimeService aGateway ) {
         gateway = aGateway
     }
 
     @Override
-    Instant currentTime() {
-        gateway.checkTheTime()
+    void processMessage( final String message ) {
+
     }
 }

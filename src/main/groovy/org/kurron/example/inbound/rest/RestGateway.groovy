@@ -20,7 +20,7 @@ import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 import org.kurron.example.MessagingContext
-import org.kurron.example.core.TimeComponent
+import org.kurron.example.core.EchoComponent
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.InboundRestGateway
 import org.springframework.beans.factory.annotation.Autowired
@@ -46,12 +46,12 @@ import org.springframework.web.servlet.HandlerMapping
 class RestGateway extends AbstractFeedbackAware {
 
     /**
-     * Knows how to get the most accurate time.
+     * Knows how to process the message.
      */
-    private final TimeComponent theComponent
+    private final EchoComponent theComponent
 
     @Autowired
-    RestGateway( final TimeComponent aComponent ) {
+    RestGateway( final EchoComponent aComponent ) {
         theComponent = aComponent
     }
 
