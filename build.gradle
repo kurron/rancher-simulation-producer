@@ -32,7 +32,7 @@ plugins {
     id "com.jfrog.bintray" version "1.2"
 }
 
-description = 'Bare bones example REST micro-service'
+description = 'The portion of the simulation that generates events.'
 group = 'org.kurron.example'
 
 ext.coverageExcludes = []
