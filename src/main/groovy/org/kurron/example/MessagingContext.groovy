@@ -31,8 +31,7 @@ enum MessagingContext implements FeedbackContext {
     MISSING_HTTP_HEADER_ERROR( 1003, FeedbackLevel.WARN, Audience.QA, 'Required {} header is missing!' ),
     GENERIC_ERROR( 1007, FeedbackLevel.ERROR, Audience.QA, 'The following error has occurred and was caught by the global error handler: {}' ),
     VALIDATION_ERROR( 1008, FeedbackLevel.INFO, Audience.QA, 'The property {} is invalid. Cause: {}' ),
-    MESSAGING_UPDATE( 1009, FeedbackLevel.INFO, Audience.QA, 'Sending {} to RabbitMQ' ),
-    NO_DISK_SPACE( 1010, FeedbackLevel.ERROR, Audience.OPERATIONS, 'Out of disk space!' )
+    MESSAGING_UPDATE( 1009, FeedbackLevel.INFO, Audience.QA, 'Sending {} to RabbitMQ' )
 
     private final int code
     private final String formatString

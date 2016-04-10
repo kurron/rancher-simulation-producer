@@ -70,8 +70,7 @@ class RestGateway extends AbstractFeedbackAware implements GenerationAbility {
         control.add( ControllerLinkBuilder.linkTo( RestGateway ).withSelfRel() )
 
         if ( theConfiguration.fail && randomBoolean() ) {
-            feedbackProvider.sendFeedback( MessagingContext.NO_DISK_SPACE )
-            throw new RuntimeException( 'Out of disk space!' )
+            throw new ArrayIndexOutOfBoundsException( 'Oops!' )
         }
 
         if ( errors.hasErrors() ) {
