@@ -46,8 +46,9 @@ class DefaultEchoComponent extends AbstractFeedbackAware implements EchoComponen
     }
 
     @Override
-    void processMessage( final String message ) {
+    String processMessage( final String message ) {
         gateway.send( message )
         repository.save( new PersistentMessage( message: message ) )
+        message
     }
 }

@@ -24,6 +24,7 @@ interface EchoComponent {
     /**
      * Sends the message to the downstream consumers.
      * @param message message to process.
+     * @return the processed message.
      */
-    void processMessage( String message )
+    String processMessage( String message )
 }
