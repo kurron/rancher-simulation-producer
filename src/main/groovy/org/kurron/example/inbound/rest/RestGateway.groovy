@@ -19,10 +19,12 @@ package org.kurron.example.inbound.rest
 import java.time.Instant
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
+import org.kurron.example.ApplicationProperties
 import org.kurron.example.MessagingContext
 import org.kurron.example.core.EchoComponent
 import org.kurron.feedback.AbstractFeedbackAware
 import org.kurron.stereotype.InboundRestGateway
+import org.kurron.traits.GenerationAbility
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.hateoas.ExposesResourceFor
 import org.springframework.hateoas.mvc.ControllerLinkBuilder
@@ -43,16 +45,20 @@ import org.springframework.web.servlet.HandlerMapping
                  consumes = [HypermediaControl.MIME_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE],
                  produces = [HypermediaControl.MIME_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE] )
 @ExposesResourceFor( HypermediaControl )
-class RestGateway extends AbstractFeedbackAware {
+class RestGateway extends AbstractFeedbackAware implements GenerationAbility {
 
     /**
      * Knows how to process the message.
      */
     private final EchoComponent theComponent
 
+    private final ApplicationProperties theConfiguration
+
     @Autowired
-    RestGateway( final EchoComponent aComponent ) {
+    RestGateway( final EchoComponent aComponent,
+                 final ApplicationProperties aConfiguration ) {
         theComponent = aComponent
+        theConfiguration = aConfiguration
     }
 
     @RequestMapping( method = [RequestMethod.PUT] )
@@ -62,6 +68,11 @@ class RestGateway extends AbstractFeedbackAware {
         final ResponseEntity<HypermediaControl> response
         def control = defaultControl( request )
         control.add( ControllerLinkBuilder.linkTo( RestGateway ).withSelfRel() )
+
+        if ( theConfiguration.fail && randomBoolean() ) {
+            feedbackProvider.sendFeedback( MessagingContext.NO_DISK_SPACE )
+            throw new RuntimeException( 'Out of disk space!' )
+        }
 
         if ( errors.hasErrors() ) {
             addErrors( errors, control )

@@ -6,6 +6,7 @@
     <module name="producer_main" />
     <envs>
       <env name="SPRING_PROFILES_ACTIVE" value="home, default" />
+      <env name="PRODUCER_FAIL" value="true" />
     </envs>
     <method>
       <option name="Gradle.BeforeRunTask" enabled="true" tasks="processResources" externalProjectPath="$PROJECT_DIR$/build.gradle" vmOptions="" scriptParameters="" />

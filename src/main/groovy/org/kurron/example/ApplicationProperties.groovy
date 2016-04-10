@@ -43,4 +43,9 @@ class ApplicationProperties {
      * Logically groups a collection of services. Used in logging.
      */
     String realm
+
+    /**
+     * If true, the REST service will fail 50% of the time.
+     */
+    boolean fail
 }
